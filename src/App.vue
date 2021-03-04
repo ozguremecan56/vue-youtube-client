@@ -1,45 +1,52 @@
 <template>
-    <div class="container">
-        <SearchBar v-on:termChange = "onTermChange"></SearchBar>
-        <VideoList v-bind:videos="videos"></VideoList>
-    </div>
+  <div class="container">
+    <SearchBar v-on:termChange="onTermChange"></SearchBar>
+    <VideoDetail v-bind:video="selectedVideo" />
+    <VideoList
+      v-bind:videos="videos"
+      v-on:videoSelect="onVideoSelect"
+    ></VideoList>
+  </div>
 </template>
 <script>
-import SearchBar from './components/SearchBar';
-import axios from 'axios';
-import VideoList from './components/VideoList'
-const API_KEY = 'AIzaSyBogdJNBjo8YlrFKabUQ945kXJD4Z-d7tk';
+import SearchBar from "./components/SearchBar";
+import axios from "axios";
+import VideoList from "./components/VideoList";
+import VideoDetail from "./components/VideoDetail";
+const API_KEY = "AIzaSyDsC12dNIPFiEGNPUUFYyK1HNUH9RFU-CY";
 
-export default{
-    name:'App',
-    components:{
-        SearchBar,
-        VideoList
-    },
-    data(){
-        return {
-            videos: [],
-
-        };
-    },
-    methods:{
-       async onTermChange(searchTerm){
-            console.log(searchTerm)
-            const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
-                params:{
-                    key: API_KEY,
-                    type: 'video',
-                    part: 'snippet',
-                    q: searchTerm
-                }
-            })
-
-            this.videos = response.data.items;
-            
+export default {
+  name: "App",
+  components: {
+    SearchBar,
+    VideoList,
+    VideoDetail,
+  },
+  data() {
+    return {
+      videos: [],
+      selectedVideo: null,
+    };
+  },
+  methods: {
+    async onTermChange(searchTerm) {
+      console.log(searchTerm);
+      const response = await axios.get(
+        "https://www.googleapis.com/youtube/v3/search",
+        {
+          params: {
+            key: API_KEY,
+            type: "video",
+            part: "snippet",
+            q: searchTerm,
+          },
         }
-
-    }
-
-}
-
+      );
+      this.videos = response.data.items;
+    },
+    onVideoSelect(video) {
+      this.selectedVideo = video;
+    },
+  },
+};
 </script>
